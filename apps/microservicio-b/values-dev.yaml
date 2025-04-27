@@ -1,0 +1,3 @@
+image: httpd:2.4-alpine
+port: 80
+host: microservicio-b.dev.example.com

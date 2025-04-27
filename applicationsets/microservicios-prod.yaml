@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: microservicios-prod
+spec:
+  generators:
+    - git:
+        repoURL: 'https://github.com/tuusuario/mi-repo-gitops'
+        revision: main
+        directories:
+          - path: 'apps/*/values-prod.yaml'
+  template:
+    metadata:
+      name: '{{path.basename}}-prod'
+    spec:
+      project: prod
+      source:
+        repoURL: 'https://github.com/tuusuario/mi-repo-gitops'
+        targetRevision: main
+        path: 'charts/microservicio'
+        helm:
+          valueFiles:
+            - '{{path.relative}}'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: '{{path.basename}}-prod'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

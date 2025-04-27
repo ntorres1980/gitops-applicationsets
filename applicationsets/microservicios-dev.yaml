@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: microservicios-dev
+spec:
+  generators:
+    - git:
+        repoURL: 'https://github.com/ntorres1980/gitops-applicationsets'
+        revision: main
+        directories:
+          - path: 'apps/*/values-dev.yaml'
+  template:
+    metadata:
+      name: '{{path.basename}}-dev'
+    spec:
+      project: dev
+      source:
+        repoURL: 'https://github.com/ntorres1980/gitops-applicationsets'
+        targetRevision: main
+        path: 'charts/microservicio'
+        helm:
+          valueFiles:
+            - '{{path.relative}}'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: '{{path.basename}}-dev'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
