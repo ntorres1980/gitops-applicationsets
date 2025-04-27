@@ -5,7 +5,7 @@ metadata:
 spec:
   generators:
     - git:
-        repoURL: 'https://github.com/tuusuario/mi-repo-gitops'
+        repoURL: 'https://github.com/ntorres1980/gitops-applicationsets'
         revision: main
         directories:
           - path: 'apps/*/values-prod.yaml'
@@ -15,7 +15,7 @@ spec:
     spec:
       project: prod
       source:
-        repoURL: 'https://github.com/tuusuario/mi-repo-gitops'
+        repoURL: 'https://github.com/ntorres1980/gitops-applicationsets'
         targetRevision: main
         path: 'charts/microservicio'
         helm:
