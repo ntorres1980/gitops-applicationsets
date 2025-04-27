@@ -4,7 +4,7 @@ metadata:
   name: dev
 spec:
   sourceRepos:
-    - 'https://github.com/tuusuario/mi-repo-gitops'
+    - 'https://github.com/ntorres1980/gitops-applicationsets'
   destinations:
     - namespace: '*'
       server: 'https://kubernetes.default.svc'
