@@ -7,7 +7,7 @@ spec:
     - git:
         repoURL: 'https://github.com/ntorres1980/gitops-applicationsets'
         revision: main
-        directories:
+        files:
           - path: 'apps/*/values-dev.yaml'
   template:
     metadata:

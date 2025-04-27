@@ -7,7 +7,7 @@ spec:
     - git:
         repoURL: 'https://github.com/ntorres1980/gitops-applicationsets'
         revision: main
-        directories:
+        files:
           - path: 'apps/*/values-prod.yaml'
   template:
     metadata:
@@ -20,7 +20,7 @@ spec:
         path: 'charts/microservicio'
         helm:
           valueFiles:
-            - '{{path.relative}}'
+            - '{{path.basename}}/values-dev.yaml'
       destination:
         server: 'https://kubernetes.default.svc'
         namespace: '{{path.basename}}-prod'
