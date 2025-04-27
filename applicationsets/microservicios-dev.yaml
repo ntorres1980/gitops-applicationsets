@@ -20,7 +20,7 @@ spec:
         path: 'charts/microservicio'
         helm:
           valueFiles:
-            - '{{path.basename}}/values-dev.yaml'
+            - 'apps/{{path.basename}}/values-dev.yaml'
       destination:
         server: 'https://kubernetes.default.svc'
         namespace: '{{path.basename}}-dev'
