@@ -127,3 +127,42 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 (You should delete the initial secret afterwards as suggested by the Getting Started Guide: https://argo-cd.readthedocs.io/en/stable/getting_started/#4-login-using-the-cli)
 ```
 
+# Instalar el NGINX Ingress Controller
+
+## 1. Agregar el repositorio de Helm de NGINX
+
+Primero, necesitas agregar el repositorio de Helm para el NGINX Ingress Controller.
+
+```bash
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+```
+# 2. Actualizar el repositorio de Helm
+Luego, actualiza tu lista de charts de Helm:
+
+```bash
+helm repo update
+```
+# 3. Instalar el Ingress Controller
+Ahora puedes instalar el NGINX Ingress Controller usando Helm. Como estás utilizando Kind, puedes especificar el espacio de nombres ingress-nginx y otros parámetros si lo deseas. El comando básico es:
+
+```bash
+helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace
+```
+Este comando hará lo siguiente:
+
+Instalará el Ingress Controller en el espacio de nombres ingress-nginx.
+
+Si el espacio de nombres no existe, lo creará.
+
+# 4. Verificar que el Ingress Controller está corriendo
+Después de instalarlo, puedes verificar que el controlador de Ingress está corriendo con el siguiente comando:
+
+```bash
+kubectl get pods -n ingress-nginx
+```
+También puedes verificar los servicios del Ingress Controller:
+
+```bash
+kubectl get svc -n ingress-nginx
+```
+Si estás utilizando Kind, los servicios típicamente serán de tipo NodePort, por lo que necesitarás acceder a través del puerto asignado.
