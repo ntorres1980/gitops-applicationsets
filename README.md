@@ -51,6 +51,43 @@ Los microservicios `microservicio-a` y `microservicio-b` se desplegarán automá
     - Se actualiza automáticamente si se agregan más servicios (carpetas nuevas) en Git.
     - Activa prune y selfHeal: elimina recursos viejos y corrige desviaciones en el clúster
 
+# Instalar kind 
+
+```bash
+[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.27.0/kind-linux-amd64
+chmod +x kind
+sudo mv kind /usr/local/bin/kind
+```
+
+
+## Para que funcione desde afuera(port-forwarding)
+Cuando creás el cluster Kind, tenés que definir explícitamente que mapee los puertos 80 y 443 al contenedor.
+
+YAML de cluster para Kind:
+
+```yaml
+# kind-config.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    extraPortMappings:
+      - containerPort: 80
+        hostPort: 80
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 443
+        protocol: TCP
+```
+
+Y creás el cluster así:
+
+```bash
+kind create cluster --name kind-appsets --config kind-config.yaml
+```
+Así Kind va a mapear el puerto 80 y 443 de tu host hacia el contenedor.
+
+
 # Instalar ArgoCD
 
 ## 1. Instalar Helm (si no lo tenés)
@@ -146,13 +183,13 @@ helm repo update
 Ahora puedes instalar el NGINX Ingress Controller usando Helm. Como estás utilizando Kind, puedes especificar el espacio de nombres ingress-nginx y otros parámetros si lo deseas. El comando básico es:
 
 ```bash
-helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace
+helm install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace --set controller.service.type=NodePort
 ```
 Este comando hará lo siguiente:
 
-Instalará el Ingress Controller en el espacio de nombres ingress-nginx.
-
-Si el espacio de nombres no existe, lo creará.
+- Instalará el Ingress Controller en el espacio de nombres ingress-nginx.
+- Si el espacio de nombres no existe, lo creará.
+- Forzara el uso de NodePort en reemplazo de LoadBalancer(opción por defecto)
 
 # 4. Verificar que el Ingress Controller está corriendo
 Después de instalarlo, puedes verificar que el controlador de Ingress está corriendo con el siguiente comando:
@@ -166,3 +203,4 @@ También puedes verificar los servicios del Ingress Controller:
 kubectl get svc -n ingress-nginx
 ```
 Si estás utilizando Kind, los servicios típicamente serán de tipo NodePort, por lo que necesitarás acceder a través del puerto asignado.
+
